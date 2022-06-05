@@ -2,19 +2,31 @@ import { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
 import { ShimmerTable } from "react-shimmer-effects";
-import axiosFetch, { fetchError } from "../../base_url";
+import axiosFetch, { fetchError, SERVER } from "../../base_url";
 
 export default function Wisata() {
     const columns = [
         {
-            name: 'Title',
+            name: 'Nama Wisata',
             selector: row => row.wisata?.name,
             sortable: true,
-
         },
         {
-            name: 'Year',
+            name: 'Deskripsi',
             selector: row => row.wisata?.description,
+            sortable: true,
+        }, {
+            name: 'Gambar',
+            selector: row => <div style={{ width: 200 }}>
+                <img src={SERVER + "/" + row.wisata?.thumbnail_url} style={{ width: 100 }} />
+            </div>,
+        }, {
+            name: 'Nomor Handphone',
+            selector: row => row.wisata?.phone,
+            sortable: true,
+        }, {
+            name: 'Informasi',
+            selector: row => row.wisata?.information,
             sortable: true,
         },
         {

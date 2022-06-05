@@ -20,21 +20,6 @@ export default function TambahWisata() {
 
     const [product, setProduct] = useState([{}])
 
-    const fetchData = async () => {
-        try {
-            const response = await axiosFetch.get("/product")
-            const json = response.data
-            console.log(json)
-            if (json.success) {
-                setProduct(json.data)
-            }
-        } catch (error) {
-            console.log(error)
-        }
-    }
-    useEffect(() => {
-
-    }, [])
 
     const [catHover, setCatHover] = useState(-1)
     const handleFileRead = async (event) => {
