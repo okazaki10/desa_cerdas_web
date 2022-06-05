@@ -1,5 +1,201 @@
+@font-face {
+  font-family: 'Roboto-Bold';
+  src: url(./assets/fonts/Roboto-Bold.ttf) format('woff');
+}
+
+@font-face {
+  font-family: 'Roboto-Regular';
+  src: url(./assets/fonts/Roboto-Regular.ttf) format('woff');
+}
+
 .App {
   text-align: center;
+}
+
+input[type="file"] {
+  display: none;
+}
+
+.main {
+  font-family: "Roboto-Regular";
+  background-color: #E7F5FD;
+}
+
+.subtitle {
+  font-family: "Roboto-Bold";
+  color: "black";
+  font-size: 37px;
+  color: #303030;
+}
+
+.categories {
+  margin-top: 5px;
+  display: flex;
+  flex-direction: row;
+}
+
+.inputtitle {
+  font-family: "Roboto-Regular";
+  color: "black";
+  font-size: 14px;
+  color: #282c34;
+}
+
+.inputtext {
+  box-sizing: border-box;
+  padding: 10px;
+  border-radius: 10px;
+  font-family: "Roboto-Regular";
+  border: 1px solid #4ECB71;
+  border-radius: 4px;
+  font-size: 14px;
+  width: 100%;
+}
+
+.button {
+  background-color: #56E4A0;
+  /* Green */
+  border: none;
+  color: white;
+  padding: 10px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-family: "Roboto-Bold";
+}
+
+.edit-button {
+  background-color: #ffc107;
+  padding: 5px 10px;
+  font-size: 14px;
+  color: white;
+  border: 0px;
+}
+
+.edit-button:hover {
+  background-color: #d19e06;
+  color: white;
+}
+
+.delete-button {
+  background-color: #dc3545;
+  padding: 5px 10px;
+  font-size: 14px;
+  color: white;
+  border: 0px;
+}
+
+.delete-button:hover {
+  background-color: #b32a38;
+  color: white;
+}
+
+.add-button {
+  background-color: #4ECB71;
+  color: white;
+  border: 0px;
+}
+
+.add-button:hover {
+  background-color: #3ea15a;
+  color: white;
+}
+
+.publish-button {
+  background-color: #56E4A0;
+  width: 100%;
+  color: white;
+  border: 0px;
+}
+
+.publish-button:hover {
+  background-color: #4fc78d;
+  color: white;
+}
+
+.sidebar-button {
+  flex-direction: row;
+  display: flex;
+  background-color: white;
+  width: 100%;
+  color: #4ECB71;
+  border: 0px;
+  align-items: center;
+  justify-content: left;
+  text-align: left;
+}
+
+.sidebar-button-none:hover {
+  background-color: white;
+  color: #4ECB71;
+}
+
+.sidebar-button-none {
+  flex-direction: row;
+  display: flex;
+  background-color: #4ECB71;
+  width: 100%;
+  color: white;
+  border: 0px;
+  align-items: center;
+  justify-content: left;
+  text-align: left;
+
+}
+
+.sidebars {
+  margin: 0;
+  padding: 14px;
+  padding-top: 60px;
+  width: 200px;
+  z-index: 1;
+  background-color: #4ECB71;
+  position: fixed;
+  top: 0px;
+  height: 100vh;
+  overflow: auto;
+  z-index: 1;
+}
+
+.navbars {
+  display: flex;
+  background-color: black;
+  z-index: 2;
+  height: 50px;
+  width: 100%;
+  position: fixed;
+  align-items: center;
+white-space: nowrap;
+  top: 0;
+  left: 0;
+}
+
+.content {
+  margin-left: 230px;
+  padding-top: 50px;
+  padding-left: 15px;
+  min-height: 100vh;
+  background-color: #E7F5FD;
+  flex-direction: row;
+  display: flex;
+}
+
+.content-main {
+  padding-right: 15px;
+  padding-top: 15px;
+  width: 100%;
+}
+
+.content-image {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 15px;
+  width: 30%;
+  background-color: #f5fcff;
 }
 
 .App-logo {
@@ -32,6 +228,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
