@@ -186,7 +186,7 @@ export default function TambahWisata() {
     }
     let location = useLocation()
     
-    useEffect(() => {
+    useState(() => {
         if (location.pathname.includes("edit")) {
             getListWisata()
         }
