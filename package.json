@@ -1,6 +1,7 @@
 {
   "name": "desa_cerdas_web",
   "version": "0.1.0",
+  "homepage":"http://desa-tambakrejo.com/",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.9.0",

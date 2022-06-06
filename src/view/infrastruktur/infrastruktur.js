@@ -5,49 +5,46 @@ import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
 import { ShimmerTable } from "react-shimmer-effects";
 import axiosFetch, { fetchError, SERVER } from "../../base_url";
-
-export default function Wisata() {
+import InputLabel from '@mui/material/InputLabel';
+import { FormControl, MenuItem, Select } from "@mui/material";
+export default function Infrastruktur() {
     const columns = [
         {
             name: 'ID',
-            selector: row => row.wisata?.id,
+            selector: row => row.infrastruktur?.id,
             sortable: true,
         },
         {
-            name: 'Nama Wisata',
-            selector: row => row.wisata?.name,
+            name: 'Nama infrastruktur',
+            selector: row => row.infrastruktur?.name,
             sortable: true,
         },
         {
             name: 'Deskripsi',
-            selector: row => row.wisata?.description,
+            selector: row => row.infrastruktur?.description,
             sortable: true,
         }, {
             name: 'Gambar',
             selector: row => <div style={{ width: 200 }}>
-                <img src={SERVER + "/" + row.wisata?.thumbnail_url} style={{ width: 100 }} />
+                <img src={SERVER + "/" + row.infrastruktur?.thumbnail_url} style={{ width: 100 }} />
             </div>,
         }, {
-            name: 'Nomor Handphone',
-            selector: row => row.wisata?.phone,
-            sortable: true,
-        }, {
             name: 'Informasi',
-            selector: row => row.wisata?.information,
+            selector: row => row.infrastruktur?.information,
             sortable: true,
         },
         {
             name: 'Kategori',
-            selector: row => row.wisata?.category?.name,
+            selector: row => row.infrastruktur?.category?.name,
             sortable: true,
         },
         {
             name: "Aksi", cell: row =>
                 <div style={{ width: 200 }}>
-                    <Link to={`/wisata/edit/${row.wisata?.id}`}>
+                    <Link to={`/infrastruktur/edit/${row.infrastruktur?.id}`}>
                         <button className="button edit-button" >Edit</button>
                     </Link>
-                    <button className="button delete-button" onClick={() => { deleteWisata(row.wisata?.id) }} style={{ marginLeft: 5 }}>Delete</button>
+                    <button className="button delete-button" onClick={() => { deleteinfrastruktur(row.infrastruktur?.id) }} style={{ marginLeft: 5 }}>Delete</button>
 
                 </div>
         },
@@ -79,19 +76,21 @@ export default function Wisata() {
     ];
     const [data, setdata] = useState([])
     const [category, setCategory] = useState([])
-    const [listWisata, setListWisata] = useState([])
+    const [listinfrastruktur, setListinfrastruktur] = useState([])
     const key = ""
     const [spinner, setspinner] = useState(false)
-    const getListWisata = async () => {
+    const getListinfrastruktur = async (id) => {
         try {
             setspinner(true)
-            const response = await axiosFetch.get("/wisata/list", {
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + key,
-                },
-            })
+            const response = await axiosFetch.post("/infrastruktur/list",
+                { category_id: id },
+                {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + key,
+                    },
+                })
             const json = response.data
             console.log(JSON.stringify(json))
             if (json.status == 200) {
@@ -113,7 +112,7 @@ export default function Wisata() {
     }
     const getListCategory = async () => {
         try {
-            const response = await axiosFetch.get("/wisata/category", {
+            const response = await axiosFetch.get("/infrastruktur/category", {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -124,6 +123,12 @@ export default function Wisata() {
             console.log(JSON.stringify(json))
             if (json.status == 200) {
                 setCategory(json.data)
+                if (json.data.length > 0) {
+                    setKategori(json.data[0].id)
+                    getListinfrastruktur(json.data[0].id)
+                }else{
+                    setKategori("")
+                }
             }
         } catch (error) {
 
@@ -139,12 +144,12 @@ export default function Wisata() {
 
         }
     }
-    const deleteWisata = async (id) => {
+    const deleteinfrastruktur = async (id) => {
         try {
             if (!window.confirm("Apakah anda yakin ingin menghapus data ini?")) {
                 return
             }
-            const response = await axiosFetch.delete("/wisata/list/delete", {
+            const response = await axiosFetch.delete("/infrastruktur/list/delete", {
                 data: {
                     id: id
                 },
@@ -157,7 +162,7 @@ export default function Wisata() {
             const json = response.data
             console.log(json)
             if (json.status == 200) {
-                getListWisata()
+                getListinfrastruktur(kategori)
             }
         } catch (error) {
             console.log(JSON.stringify(error))
@@ -182,7 +187,7 @@ export default function Wisata() {
                 alert("Pastikan kolom tidak ada yang kosong")
                 return
             }
-            const response = await axiosFetch.post("/wisata/category/store", {
+            const response = await axiosFetch.post("/infrastruktur/category/store", {
                 name: name,
             }, {
                 headers: {
@@ -217,7 +222,7 @@ export default function Wisata() {
                 alert("Pastikan kolom tidak ada yang kosong")
                 return
             }
-            const response = await axiosFetch.put("/wisata/category/update", {
+            const response = await axiosFetch.put("/infrastruktur/category/update", {
                 id: id,
                 name: name,
             }, {
@@ -252,7 +257,7 @@ export default function Wisata() {
             if (!window.confirm("Apakah anda yakin ingin menghapus data ini?")) {
                 return
             }
-            const response = await axiosFetch.delete("/wisata/category/delete", {
+            const response = await axiosFetch.delete("/infrastruktur/category/delete", {
                 data: {
                     id: id
                 },
@@ -282,13 +287,14 @@ export default function Wisata() {
         }
     }
     useState(() => {
-        getListWisata()
         getListCategory()
     })
     const [open, setOpen] = useState(false)
     const [id, setId] = useState()
     const [name, setName] = useState("")
     const [isEdit, setIsEdit] = useState(false)
+    const [kategori, setKategori] = useState("")
+
     return (
         <div className="main">
             <div className="content">
@@ -296,7 +302,7 @@ export default function Wisata() {
 
                     <div>
                         <div style={{ display: "flex" }}>
-                            <div className="subtitle" style={{ width: "100%" }}>Kategori Wisata</div>
+                            <div className="subtitle" style={{ width: "100%" }}>Kategori infrastruktur</div>
                             <button className="button add-button" onClick={() => {
                                 setOpen(true)
                                 setIsEdit(false)
@@ -317,9 +323,7 @@ export default function Wisata() {
                         </Modal>
                         <div style={{ marginTop: 15 }}>
                             {spinner ? (
-
                                 <ShimmerTable row={1}></ShimmerTable>
-
                             ) : (<DataTable
                                 columns={categoryColumns}
                                 data={category}
@@ -334,9 +338,28 @@ export default function Wisata() {
                     </div>
                     <div style={{ backgroundColor: "grey", height: 2, marginTop: 30, marginBottom: 30, display: "flex" }}></div>
                     <div>
-                        <div style={{ display: "flex" }}>
-                            <div className="subtitle" style={{ width: "100%" }}>Wisata</div>
-                            <Link to="/wisata/add" style={{ textDecoration: "none" }}>
+                        <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Kategori</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={kategori}
+                                label="Kategori"
+                                onChange={(e) => {
+                                    setKategori(e.target.value)
+                                    getListinfrastruktur(e.target.value)
+                                }
+                                }
+                                style={{ marginTop: 15 }}
+                            >
+                                {category.map((item, index) => (
+                                    <MenuItem value={item.id}>{item.name}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <div style={{ display: "flex", marginTop: 15 }}>
+                            <div className="subtitle" style={{ width: "100%" }}>infrastruktur</div>
+                            <Link to="/infrastruktur/add" style={{ textDecoration: "none" }}>
                                 <button className="button add-button" >Tambah</button>
                             </Link>
                         </div>

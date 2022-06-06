@@ -4,13 +4,12 @@ import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 import '../../App.css';
 import axiosFetch, { fetchError, SERVER } from '../../base_url';
 import InputLabel from '@mui/material/InputLabel';
-export default function TambahWisata() {
+export default function TambahInfrastruktur() {
     let { id } = useParams();
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
     const [map, setMap] = useState("")
-    const [webUrl, setWebUrl] = useState("")
-    const [phone, setPhone] = useState("")
+
     const [information, setInformation] = useState("")
     const [kategori, setKategori] = useState("")
     const [category, setCategory] = useState([])
@@ -41,10 +40,10 @@ export default function TambahWisata() {
 
     const key = ""
     const [spinner, setspinner] = useState(false)
-    const getWisata = async () => {
+    const getinfrastruktur = async () => {
         try {
             setspinner(true)
-            const response = await axiosFetch.get("/wisata/list/" + id, {
+            const response = await axiosFetch.get("/infrastruktur/list/" + id, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -57,8 +56,7 @@ export default function TambahWisata() {
                 setName(json.data.name)
                 setDescription(json.data.description)
                 setMap(json.data.map_url)
-                setWebUrl(json.data.web_url)
-                setPhone(json.data.phone)
+              
                 setInformation(json.data.information)
                 setImageLink(SERVER + "/" + json.data.thumbnail_url)
             }
@@ -77,9 +75,9 @@ export default function TambahWisata() {
         }
     }
     const [success, setsucess] = useState(false)
-    const addWisata = async () => {
+    const addinfrastruktur = async () => {
         try {
-            if (name == "" || description == "" || map == "" || webUrl == "" || phone == "" || information == "" || kategori == "") {
+            if (name == "" || description == "" || map == "" || information == "" || kategori == "") {
                 alert("Pastikan kolom tidak ada yang kosong")
                 return
             }
@@ -88,15 +86,13 @@ export default function TambahWisata() {
                 return
             }
             setspinner(true)
-            const response = await axiosFetch.post("/wisata/list/store", {
+            const response = await axiosFetch.post("/infrastruktur/list/store", {
                 name: name,
                 description: description,
                 base64_thumbnail: imageData,
                 map_url: map,
-                web_url: webUrl,
-                phone: phone,
                 information: information,
-                wisata_category_id: kategori
+                infrastruktur_category_id: 1
             }, {
                 headers: {
                     'Accept': 'application/json',
@@ -107,17 +103,17 @@ export default function TambahWisata() {
             const json = response.data
             console.log(json)
             if (json.status == 200) {
-                addGambar(json.data.id)
+               addGambar(json.data.id)
             }
         } catch (error) {
             console.log(JSON.stringify(error))
             if (error.message == "Network Error") {
                 alert(error.message)
             } else {
-                let resp = error.response.data
+               /* let resp = error.response.data
                 let err = fetchError(resp)
-                console.log(JSON.stringify(resp))
-                alert(resp.message + "\n" + err)
+                console.log(JSON.stringify(resp))*/
+                alert(error.message)
             }
         } finally {
             setspinner(false)
@@ -126,9 +122,9 @@ export default function TambahWisata() {
     const addGambar = async (id) => {
         try {
             setspinner(true)
-            const response = await axiosFetch.post("/wisata/images/store", {
+            const response = await axiosFetch.post("/infrastruktur/images/store", {
                 base64_images: imageData,
-                wisata_list_id: id
+                infrastruktur_list_id: id
             }, {
                 headers: {
                     'Accept': 'application/json',
@@ -157,24 +153,24 @@ export default function TambahWisata() {
         }
     }
 
-    const updateWisata = async () => {
+    const updateinfrastruktur = async () => {
         try {
-            if (name == "" || description == "" || map == "" || webUrl == "" || phone == "" || information == "" || kategori == "") {
+            if (name == "" || description == "" || map == ""|| information == "" || kategori == "") {
                 alert("Pastikan kolom tidak ada yang kosong")
                 return
             }
 
             setspinner(true)
-            const response = await axiosFetch.put("/wisata/list/update", {
+            const response = await axiosFetch.put("/infrastruktur/list/update", {
                 id: id,
                 name: name,
                 description: description,
                 base64_thumbnail: imageData,
                 map_url: map,
-                web_url: webUrl,
-                phone: phone,
+          
+      
                 information: information,
-                wisata_category_id: kategori
+                infrastruktur_category_id: kategori
             }, {
                 headers: {
                     'Accept': 'application/json',
@@ -205,7 +201,7 @@ export default function TambahWisata() {
 
     const getListCategory = async () => {
         try {
-            const response = await axiosFetch.get("/wisata/category", {
+            const response = await axiosFetch.get("/infrastruktur/category", {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -236,28 +232,25 @@ export default function TambahWisata() {
 
     useState(() => {
         if (location.pathname.includes("edit")) {
-            getWisata()
+            getinfrastruktur()
         }
         getListCategory()
     })
 
     return (
         <div className="main">
-            {success ? <Navigate to="/wisata" /> : null}
+            {success ? <Navigate to="/infrastruktur" /> : null}
             <div className="content">
                 <div className="content-main">
 
-                    <div className="subtitle">{location.pathname.includes("edit") ? "Update Wisata" : "Tambah Wisata"}</div>
-                    <div className="inputtitle" style={{ marginTop: 15 }}>Nama Wisata</div>
+                    <div className="subtitle">{location.pathname.includes("edit") ? "Update infrastruktur" : "Tambah infrastruktur"}</div>
+                    <div className="inputtitle" style={{ marginTop: 15 }}>Nama infrastruktur</div>
                     <input className="inputtext" onChange={(e) => { setName(e.target.value) }} value={name} style={{ marginTop: 5 }} ></input>
                     <div className="inputtitle" style={{ marginTop: 15 }}>Deskripsi</div>
                     <textarea className="inputtext" onChange={(e) => { setDescription(e.target.value) }} value={description} style={{ marginTop: 5, height: 100 }} ></textarea>
                     <div className="inputtitle" style={{ marginTop: 15 }}>Map URL</div>
                     <input className="inputtext" onChange={(e) => { setMap(e.target.value) }} value={map} style={{ marginTop: 5 }} ></input>
-                    <div className="inputtitle" style={{ marginTop: 15 }}>Web URL</div>
-                    <input className="inputtext" onChange={(e) => { setWebUrl(e.target.value) }} value={webUrl} style={{ marginTop: 5 }} ></input>
-                    <div className="inputtitle" style={{ marginTop: 15 }}>Nomor Handphone</div>
-                    <input type={"number"} className="inputtext" onChange={(e) => { setPhone(e.target.value) }} value={phone} style={{ marginTop: 5 }} ></input>
+                    
                     <div className="inputtitle" style={{ marginTop: 15 }}>Informasi</div>
                     <textarea className="inputtext" onChange={(e) => { setInformation(e.target.value) }} value={information} style={{ marginTop: 5, height: 100 }} ></textarea>
                     <div style={{ marginTop: 15 }}>
@@ -310,9 +303,9 @@ export default function TambahWisata() {
                         </div>
                         <div style={{ width: "100%" }}>
                             {location.pathname.includes("edit") ? (
-                                <button className="button publish-button" onClick={updateWisata} style={{ marginTop: 15 }}>Update Wisata</button>
+                                <button className="button publish-button" onClick={updateinfrastruktur} style={{ marginTop: 15 }}>Update infrastruktur</button>
                             ) : (
-                                <button className="button publish-button" onClick={addWisata} style={{ marginTop: 15 }}>Tambah Wisata</button>)}
+                                <button className="button publish-button" onClick={addinfrastruktur} style={{ marginTop: 15 }}>Tambah infrastruktur</button>)}
                         </div>
                     </div>
 

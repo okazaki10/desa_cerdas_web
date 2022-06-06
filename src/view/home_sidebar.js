@@ -26,6 +26,11 @@ export default function HomeSidebar() {
                     <div style={{ marginLeft: 10 }}>Wisata</div>
                 </button>
             </Link>
+            <Link to="/infrastruktur" style={{ textDecoration: "none" }}>
+                <button className={location.pathname.includes("infrastruktur") ? "button sidebar-button" : "button sidebar-button-none"} style={{ marginTop: 15 }}>
+                    <div style={{ marginLeft: 10 }}>Infrastruktur</div>
+                </button>
+            </Link>
             <Link to="/epasar" style={{ textDecoration: "none" }}>
                 <button className={location.pathname.includes("epasar") ? "button sidebar-button" : "button sidebar-button-none"} style={{ marginTop: 15 }}>
                     <div style={{ marginLeft: 10 }}>Epasar</div>
@@ -36,9 +41,9 @@ export default function HomeSidebar() {
                     <div style={{ marginLeft: 10 }}>Tpst</div>
                 </button>
             </Link>
-            <Link to="/login" style={{ textDecoration: "none"   }}>
+            <Link to="/login" style={{ textDecoration: "none" }}>
                 <button className={"button sidebar-button"} style={{ marginTop: 40, backgroundColor: "#dc3545", color: "white" }}>
-                    <div style={{textAlign:"center",width:"100%" }}>Logout</div>
+                    <div style={{ textAlign: "center", width: "100%" }}>Logout</div>
                 </button>
             </Link>
         </div>
