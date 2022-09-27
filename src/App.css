@@ -54,7 +54,6 @@ input[type="file"] {
 
 .button {
   background-color: #56E4A0;
-  /* Green */
   border: none;
   color: white;
   padding: 10px 15px;
@@ -65,6 +64,35 @@ input[type="file"] {
   cursor: pointer;
   border-radius: 5px;
   font-family: "Roboto-Bold";
+}
+
+.menu-button {
+  background-color: #4ECB71;
+  color: white;
+  padding: 10px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-family: "Roboto-Bold";
+  display: none;
+  margin-right: 15px;
+}
+
+.menu-button-none {
+  background-color: white;
+  color: #4ECB71;
+  padding: 10px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+  font-family: "Roboto-Bold";
+  margin-right: 15px;
 }
 
 .edit-button {
@@ -92,7 +120,16 @@ input[type="file"] {
   background-color: #b32a38;
   color: white;
 }
+.decline-button {
+  background-color: #dc3545;
+  color: white;
+  border: 0px;
+}
 
+.decline-button:hover {
+  background-color: #b32a38;
+  color: white;
+}
 .add-button {
   background-color: #4ECB71;
   color: white;
@@ -143,7 +180,6 @@ input[type="file"] {
   align-items: center;
   justify-content: left;
   text-align: left;
-
 }
 
 .sidebars {
@@ -211,6 +247,31 @@ white-space: nowrap;
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+.admin {
+  display: flex;
+}
+
+@media only screen and (max-width: 600px) {
+  .sidebars {
+    display: none;
+  }
+  .content {
+    margin-left: 0px;
+  }
+  .admin {
+    display: none;
+  }
+  .menu-button {
+    display: block;
+  }
+}
+
+@media only screen and (min-width: 600px) {
+  .menu-button-none {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {

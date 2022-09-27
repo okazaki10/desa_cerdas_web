@@ -1,50 +1,47 @@
 import { Button, Modal, Typography } from "@mui/material";
 import { Box, width } from "@mui/system";
 import { useEffect, useState } from "react";
+import { useCookies } from "react-cookie";
 import DataTable from "react-data-table-component";
 import { Link } from "react-router-dom";
 import { ShimmerTable } from "react-shimmer-effects";
 import axiosFetch, { fetchError, SERVER } from "../../base_url";
-import InputLabel from '@mui/material/InputLabel';
-import { FormControl, MenuItem, Select } from "@mui/material";
-export default function Infrastruktur() {
+
+export default function Users() {
     const columns = [
         {
             name: 'ID',
-            selector: row => row.infrastruktur?.id,
+            selector: row => row.id,
             sortable: true,
         },
         {
-            name: 'Nama infrastruktur',
-            selector: row => row.infrastruktur?.name,
+            name: 'Nama toko',
+            selector: row => row.name,
             sortable: true,
         },
         {
-            name: 'Deskripsi',
-            selector: row => row.infrastruktur?.description,
+            name: 'Alamat',
+            selector: row => row.address + ", " + row.city + ", " + row.province + ", " + row.postal_code,
             sortable: true,
         }, {
-            name: 'Gambar',
-            selector: row => <div style={{ width: 200 }}>
-                <img src={SERVER + "/" + row.infrastruktur?.thumbnail_url} style={{ width: 100 }} />
-            </div>,
-        }, {
-            name: 'Informasi',
-            selector: row => row.infrastruktur?.information,
+            name: 'Nomor Handphone',
+            selector: row => row.phone,
             sortable: true,
-        },
-        {
-            name: 'Kategori',
-            selector: row => row.infrastruktur?.category?.name,
+        }, {
+            name: 'Di Approve?',
+            selector: row => row.is_approved=="0"? "Belum":"Sudah",
             sortable: true,
         },
         {
             name: "Aksi", cell: row =>
                 <div style={{ width: 200 }}>
-                    <Link to={`/infrastruktur/edit/${row.infrastruktur?.id}`}>
-                        <button className="button edit-button" >Edit</button>
-                    </Link>
-                    <button className="button delete-button" onClick={() => { deleteinfrastruktur(row.infrastruktur?.id) }} style={{ marginLeft: 5 }}>Delete</button>
+
+                    <button className="button edit-button" onClick={() => {
+                        setOpen(true)
+                        setId(row.id)
+                        setIsEdit(true)
+                    }} >Approve</button>
+                    <button className="button delete-button" onClick={() => { deleteKategori(row.id) }} style={{ marginLeft: 5 }}>Delete</button>
 
                 </div>
         },
@@ -76,21 +73,20 @@ export default function Infrastruktur() {
     ];
     const [data, setdata] = useState([])
     const [category, setCategory] = useState([])
-    const [listinfrastruktur, setListinfrastruktur] = useState([])
-    const key = ""
+    const [listusers, setListusers] = useState([])
+    const [cookies, setCookie] = useCookies(['key']);
+    const key = cookies.key
     const [spinner, setspinner] = useState(false)
-    const getListinfrastruktur = async (id) => {
+    const getListusers = async () => {
         try {
             setspinner(true)
-            const response = await axiosFetch.post("/infrastruktur/list",
-                { category_id: id },
-                {
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + key,
-                    },
-                })
+            const response = await axiosFetch.get("/merchant/list", {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + key,
+                },
+            })
             const json = response.data
             console.log(JSON.stringify(json))
             if (json.status == 200) {
@@ -112,8 +108,7 @@ export default function Infrastruktur() {
     }
     const getListCategory = async () => {
         try {
-            setspinner(true)
-            const response = await axiosFetch.get("/infrastruktur/category", {
+            const response = await axiosFetch.get("/users/category", {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -124,12 +119,6 @@ export default function Infrastruktur() {
             console.log(JSON.stringify(json))
             if (json.status == 200) {
                 setCategory(json.data)
-                if (json.data.length > 0) {
-                    setKategori(json.data[0].id)
-                    getListinfrastruktur(json.data[0].id)
-                }else{
-                    setKategori("")
-                }
             }
         } catch (error) {
 
@@ -142,15 +131,15 @@ export default function Infrastruktur() {
                 console.log(resp.message + "\n" + err)
             }
         } finally {
-            setspinner(false)
+
         }
     }
-    const deleteinfrastruktur = async (id) => {
+    const deleteusers = async (id) => {
         try {
             if (!window.confirm("Apakah anda yakin ingin menghapus data ini?")) {
                 return
             }
-            const response = await axiosFetch.delete("/infrastruktur/list/delete", {
+            const response = await axiosFetch.delete("/users/list/delete", {
                 data: {
                     id: id
                 },
@@ -163,7 +152,7 @@ export default function Infrastruktur() {
             const json = response.data
             console.log(json)
             if (json.status == 200) {
-                getListinfrastruktur(kategori)
+                getListusers()
             }
         } catch (error) {
             console.log(JSON.stringify(error))
@@ -188,7 +177,7 @@ export default function Infrastruktur() {
                 alert("Pastikan kolom tidak ada yang kosong")
                 return
             }
-            const response = await axiosFetch.post("/infrastruktur/category/store", {
+            const response = await axiosFetch.post("/users/category/store", {
                 name: name,
             }, {
                 headers: {
@@ -217,15 +206,10 @@ export default function Infrastruktur() {
 
         }
     }
-    const updateKategori = async () => {
+    const approveUsers = async () => {
         try {
-            if (name == "") {
-                alert("Pastikan kolom tidak ada yang kosong")
-                return
-            }
-            const response = await axiosFetch.put("/infrastruktur/category/update", {
+            const response = await axiosFetch.put("/merchant/approve", {
                 id: id,
-                name: name,
             }, {
                 headers: {
                     'Accept': 'application/json',
@@ -237,7 +221,8 @@ export default function Infrastruktur() {
             console.log(json)
             if (json.status == 200) {
                 setOpen(false)
-                getListCategory()
+                getListusers()
+                //getListCategory()
             }
         } catch (error) {
             console.log(JSON.stringify(error))
@@ -258,7 +243,7 @@ export default function Infrastruktur() {
             if (!window.confirm("Apakah anda yakin ingin menghapus data ini?")) {
                 return
             }
-            const response = await axiosFetch.delete("/infrastruktur/category/delete", {
+            const response = await axiosFetch.delete("/user/delete", {
                 data: {
                     id: id
                 },
@@ -288,27 +273,20 @@ export default function Infrastruktur() {
         }
     }
     useState(() => {
-        getListCategory()
+        getListusers()
+        //getListCategory()
     })
     const [open, setOpen] = useState(false)
     const [id, setId] = useState()
     const [name, setName] = useState("")
     const [isEdit, setIsEdit] = useState(false)
-    const [kategori, setKategori] = useState("")
-
     return (
         <div className="main">
             <div className="content">
                 <div className="content-main">
 
                     <div>
-                        <div style={{ display: "flex" }}>
-                            <div className="subtitle" style={{ width: "100%" }}>Kategori infrastruktur</div>
-                            <button className="button add-button" onClick={() => {
-                                setOpen(true)
-                                setIsEdit(false)
-                            }}>Tambah</button>
-                        </div>
+                   
                         <Modal
                             open={open}
                             onClose={() => { setOpen(false) }}
@@ -316,53 +294,17 @@ export default function Infrastruktur() {
                             aria-describedby="modal-modal-description"
                         >
                             <div className="modal">
-                                <div className="inputtitle" style={{ fontSize: 20, fontWeight: "bold" }}>{isEdit ? "Edit Kategori" : "Tambah Kategori"}</div>
-                                <div className="inputtitle" style={{ marginTop: 15 }}>Nama Kategori</div>
-                                <input className="inputtext" onChange={(e) => { setName(e.target.value) }} value={name} style={{ marginTop: 5 }} ></input>
-                                <button className="button add-button" onClick={() => { isEdit ? updateKategori(id) : addKategori() }} style={{ marginTop: 15, float: "right" }} >{isEdit ? "Update" : "Tambah"}</button>
+                                <div className="inputtitle" style={{ fontSize: 20, fontWeight: "bold",textAlign:"center" }}>Approve User?</div>
+                                <button className="button add-button" onClick={() => { approveUsers(id) }} style={{ marginTop: 15,marginRight:15 }} >Approve</button>
+                                <button className="button decline-button" onClick={() => { setOpen(false) }} style={{ marginTop: 15 }} >Batal</button>
                             </div>
                         </Modal>
-                        <div style={{ marginTop: 15 }}>
-                            {spinner ? (
-                                <ShimmerTable row={1}></ShimmerTable>
-                            ) : (<DataTable
-                                columns={categoryColumns}
-                                data={category}
-                                direction="auto"
-                                fixedHeaderScrollHeight="300px"
-                                pagination
-                                responsive
-                                subHeaderAlign="right"
-                                subHeaderWrap
-                            />)}
-                        </div>
+                 
                     </div>
-                    <div style={{ backgroundColor: "grey", height: 2, marginTop: 30, marginBottom: 30, display: "flex" }}></div>
-                    <div>
-                        <FormControl fullWidth>
-                            <InputLabel id="demo-simple-select-label">Kategori</InputLabel>
-                            <Select
-                                labelId="demo-simple-select-label"
-                                id="demo-simple-select"
-                                value={kategori}
-                                label="Kategori"
-                                onChange={(e) => {
-                                    setKategori(e.target.value)
-                                    getListinfrastruktur(e.target.value)
-                                }
-                                }
-                                style={{ marginTop: 15 }}
-                            >
-                                {category.map((item, index) => (
-                                    <MenuItem value={item.id}>{item.name}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        <div style={{ display: "flex", marginTop: 15 }}>
-                            <div className="subtitle" style={{ width: "100%" }}>infrastruktur</div>
-                            <Link to="/infrastruktur/add" style={{ textDecoration: "none" }}>
-                                <button className="button add-button" >Tambah</button>
-                            </Link>
+                     <div>
+                        <div style={{ display: "flex" }}>
+                            <div className="subtitle" style={{ width: "100%" }}>List Toko User</div>
+                          
                         </div>
 
                         <div style={{ marginTop: 15 }}>
