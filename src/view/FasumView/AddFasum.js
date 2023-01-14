@@ -5,13 +5,10 @@ import '../../App.css';
 import axiosFetch, { fetchError, SERVER } from '../../base_url';
 import InputLabel from '@mui/material/InputLabel';
 import { useCookies } from "react-cookie";
-export default function HomePage() {
+export default function AddFasum() {
     let { id } = useParams();
-    const [description, setDescription] = useState('')
     const [name, setName] = useState('')
-    const [visi, setVisi] = useState('')
-    const [misi, setMisi] = useState('')
-    const [villageUrl, setVillageUrl] = useState('')
+    const [description, setDescription] = useState('')
     const [map, setMap] = useState("")
 
     const [information, setInformation] = useState("")
@@ -44,11 +41,10 @@ export default function HomePage() {
     const [cookies, setCookie] = useCookies(['key']);
     const key = ""
     const [spinner, setspinner] = useState(false)
-    const [status, setStatus] = useState(0)
-    const getvillage = async () => {
+    const getfasum = async () => {
         try {
             setspinner(true)
-            const response = await axiosFetch.get("/information/village/1", {
+            const response = await axiosFetch.get("/facility/" + id, {
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
@@ -57,15 +53,13 @@ export default function HomePage() {
             })
             const json = response.data
             console.log(JSON.stringify(json))
-            if (json.data == null) {
-                return
-            }
             if (json.status == 200) {
-                setStatus(1)
-                setVisi(json.data.vision)
-                setMisi(json.data.mission)
-                setVillageUrl(json.data.url)
-                setImageLink(SERVER + "/" + json.data.image)
+                setName(json.data.name)
+                setDescription(json.data.description)
+                setMap(json.data.map_url)
+              
+                setInformation(json.data.information)
+                setImageLink(SERVER + "/" + json.data.image_url)
             }
         } catch (error) {
 
@@ -82,9 +76,9 @@ export default function HomePage() {
         }
     }
     const [success, setsucess] = useState(false)
-    const addvillage = async () => {
+    const addfasum = async () => {
         try {
-            if (visi == "" || misi == "") {
+            if (name == "" || description == "" || map == "" || information == "" || kategori == "") {
                 alert("Pastikan kolom tidak ada yang kosong")
                 return
             }
@@ -93,11 +87,13 @@ export default function HomePage() {
                 return
             }
             setspinner(true)
-            const response = await axiosFetch.post("/information/village/store", {
-                visi: visi,
-                misi: misi,
-                url: villageUrl,
-                base64_image: imageData
+            const response = await axiosFetch.post("/facility/store", {
+                name: name,
+                description: description,
+                base64_image: imageData,
+                map_url: map,
+                information: information,
+                facility_category_id: kategori
             }, {
                 headers: {
                     'Accept': 'application/json',
@@ -110,16 +106,16 @@ export default function HomePage() {
             if (json.status == 200) {
                 alert("Berhasil tambah data")
                 setsucess(true)
-                //addGambar(json.data.id)
+               //addGambar(json.data.id)
             }
         } catch (error) {
             console.log(JSON.stringify(error))
             if (error.message == "Network Error") {
                 alert(error.message)
             } else {
-                /* let resp = error.response.data
-                 let err = fetchError(resp)
-                 console.log(JSON.stringify(resp))*/
+               /* let resp = error.response.data
+                let err = fetchError(resp)
+                console.log(JSON.stringify(resp))*/
                 alert(error.message)
             }
         } finally {
@@ -131,7 +127,7 @@ export default function HomePage() {
             setspinner(true)
             const response = await axiosFetch.post("/facility/images/store", {
                 base64_images: imageData,
-                desa_list_id: id
+                fasum_list_id: id
             }, {
                 headers: {
                     'Accept': 'application/json',
@@ -160,23 +156,22 @@ export default function HomePage() {
         }
     }
 
-    const updatevillage = async () => {
+    const updatefasum = async () => {
         try {
-            if (visi == "" || misi == "") {
+            if (name == "" || description == "" || map == ""|| information == "" || kategori == "") {
                 alert("Pastikan kolom tidak ada yang kosong")
                 return
             }
-            if (imageLink == "") {
-                alert("Pastikan gambar terisi")
-                return
-            }
+
             setspinner(true)
-            const response = await axiosFetch.put("/information/village/update", {
-                id: 1,
-                visi: visi,
-                misi: misi,
-                url: villageUrl,
-                base64_image: imageData
+            const response = await axiosFetch.put("/facility/update", {
+                facility_id: id,
+                name: name,
+                description: description,
+                base64_image: imageData,
+                map_url: map,
+                information: information,
+                facility_category_id: kategori
             }, {
                 headers: {
                     'Accept': 'application/json',
@@ -187,19 +182,18 @@ export default function HomePage() {
             const json = response.data
             console.log(json)
             if (json.status == 200) {
-                alert("Berhasil update data")
+                alert("Berhasil update data!")
                 setsucess(true)
-                //addGambar(json.data.id)
             }
         } catch (error) {
             console.log(JSON.stringify(error))
             if (error.message == "Network Error") {
                 alert(error.message)
             } else {
-                /* let resp = error.response.data
-                 let err = fetchError(resp)
-                 console.log(JSON.stringify(resp))*/
-                alert(error.message)
+                let resp = error.response.data
+                let err = fetchError(resp)
+                console.log(JSON.stringify(resp))
+                alert(resp.message + "\n" + err)
             }
         } finally {
             setspinner(false)
@@ -238,42 +232,81 @@ export default function HomePage() {
     let location = useLocation()
 
     useState(() => {
-        getvillage()
+        if (location.pathname.includes("edit")) {
+            getfasum()
+        }
+        getListCategory()
     })
 
     return (
         <div className="main">
-            {success ? <Navigate to="/" /> : null}
+            {success ? <Navigate to="/fasum" /> : null}
             <div className="content">
                 <div className="content-main">
-                    <div style={{ display: "flex" }}>
-                        <div className="subtitle" style={{ width: "100%" }}>Desa Tambakrejo</div>
-                        {status == 1
-                            ?
-                            <Link to="/village/edit/1" style={{ textDecoration: "none" }}>
-                                <button className="button add-button" >Update</button>
-                            </Link>
-                            :
-                            <div></div>
-                        }
 
+                    <div className="subtitle">{location.pathname.includes("edit") ? "Update fasum" : "Tambah fasum"}</div>
+                    <div className="inputtitle" style={{ marginTop: 15 }}>Nama fasum</div>
+                    <input className="inputtext" onChange={(e) => { setName(e.target.value) }} value={name} style={{ marginTop: 5 }} ></input>
+                    <div className="inputtitle" style={{ marginTop: 15 }}>Deskripsi</div>
+                    <textarea className="inputtext" onChange={(e) => { setDescription(e.target.value) }} value={description} style={{ marginTop: 5, height: 100 }} ></textarea>
+                    <div className="inputtitle" style={{ marginTop: 15 }}>Map URL</div>
+                    <input className="inputtext" onChange={(e) => { setMap(e.target.value) }} value={map} style={{ marginTop: 5 }} ></input>
+                    
+                    <div className="inputtitle" style={{ marginTop: 15 }}>Informasi</div>
+                    <textarea className="inputtext" onChange={(e) => { setInformation(e.target.value) }} value={information} style={{ marginTop: 5, height: 100 }} ></textarea>
+                    <div style={{ marginTop: 15 }}>
+                        <FormControl fullWidth>
+                            <InputLabel id="demo-simple-select-label">Kategori</InputLabel>
+                            <Select
+                                labelId="demo-simple-select-label"
+                                id="demo-simple-select"
+                                value={kategori}
+                                label="Kategori"
+                                onChange={(e) => setKategori(e.target.value)}
+                                style={{ marginTop: 15 }}
+                            >
+                                {category.map((item, index) => (
+                                    <MenuItem value={item.id}>{item.name}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
                     </div>
-                    <div className="inputtitle" style={{ marginTop: 15 }}>Visi</div>
-                    <textarea className="inputtext" onChange={(e) => { setVisi(e.target.value) }} value={visi} style={{ marginTop: 5, height: 100 }} disabled></textarea>
-                    <div className="inputtitle" style={{ marginTop: 15 }}>Misi</div>
-                    <textarea className="inputtext" onChange={(e) => { setMisi(e.target.value) }} value={misi} style={{ marginTop: 5, height: 100 }} disabled></textarea>
-                    <div className="inputtitle" style={{ marginTop: 15 }}>URL Desa</div>
-                    <input className="inputtext" onChange={(e) => { setVillageUrl(e.target.value) }} value={villageUrl} style={{ marginTop: 5 }} disabled></input>
-                    <div htmlFor="file-upload" style={{ display: "flex", borderRadius: 15, backgroundColor: "white", width: 220, height: 220, marginTop: 30, justifyContent: "center", alignItems: "center" }}>
-                        <img src={imageLink}
-                            style={{ width: "100%", height: "100%", borderRadius: 15, objectFit: "cover" }}
-                        >
-                        </img>
-                    </div>
+                    <input
+                        id="file-upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => { handleFileRead(e) }}
+                        size="small"
+                        variant="standard"
+                        style={{ backgroundColor: "white", border: "none", marginTop: 15 }}
+                    />
+                    <label htmlFor="file-upload" style={{ display: "flex", borderRadius: 15, backgroundColor: "white", width: 220, height: 220, marginTop: 30, justifyContent: "center", alignItems: "center" }}>
+                        {imageLink == "" ? (
+                            <div>
+                                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                    <img src={require('../../assets/images/empty.png')}
+                                        style={{ width: 100, height: 100 }}
+                                    />
+                                </div>
+                                <div style={{ textAlign: "center", fontSize: 20, color: "#3B97CB", marginTop: 20, textDecorationLine: "underline" }}>Upload Gambar Disini</div>
+                            </div>
+                        ) : (
+                            <img src={imageLink}
+                                style={{ width: "100%", height: "100%", borderRadius: 15, objectFit: "cover" }}
+                            >
+                            </img>
+                        )}
+                    </label>
                     <div style={{ display: "flex", flexDirection: "row", width: "100%", marginTop: 15, marginBottom: 50, alignItems: "end" }}>
                         <div style={{ width: "100%" }}>
                         </div>
                         <div style={{ width: "100%" }}>
+                        </div>
+                        <div style={{ width: "100%" }}>
+                            {location.pathname.includes("edit") ? (
+                                <button className="button publish-button" onClick={updatefasum} style={{ marginTop: 15 }}>Update fasum</button>
+                            ) : (
+                                <button className="button publish-button" onClick={addfasum} style={{ marginTop: 15 }}>Tambah fasum</button>)}
                         </div>
                     </div>
 

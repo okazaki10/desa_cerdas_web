@@ -1,5 +1,8 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import AddFasum from "../view/FasumView/AddFasum";
+import Fasum from "../view/FasumView/Fasum";
 import Home from "../view/home";
+import AddVillage from "../view/homepage/AddVillage";
 import HomePage from "../view/homepage/homepage";
 import Infrastruktur from "../view/infrastruktur/infrastruktur";
 import TambahInfrastruktur from "../view/infrastruktur/tambah_infrastruktur";
@@ -34,12 +37,14 @@ export default function PageRoute() {
             <Route path="edit/:id" element={<TambahInfrastruktur />}></Route>
           </Route>
           <Route path="fasum/">
-            <Route path="" element={<Infrastruktur />}></Route>
-            <Route path="add" element={<TambahInfrastruktur />}></Route>
-            <Route path="edit/:id" element={<TambahInfrastruktur />}></Route>
+            <Route path="" element={<Fasum />}></Route>
+            <Route path="add" element={<AddFasum />}></Route>
+            <Route path="edit/:id" element={<AddFasum />}></Route>
           </Route>
           <Route path="epasar" element={<HomePage />}></Route>
           <Route path="tpst" element={<HomePage />}></Route>
+          <Route path="village/add" element={<AddVillage />}></Route>
+          <Route path="village/edit/:id" element={<AddVillage />}></Route>
           <Route
             path="*"
             element={<Navigate to="/404" />}

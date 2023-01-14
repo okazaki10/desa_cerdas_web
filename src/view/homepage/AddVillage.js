@@ -5,7 +5,7 @@ import '../../App.css';
 import axiosFetch, { fetchError, SERVER } from '../../base_url';
 import InputLabel from '@mui/material/InputLabel';
 import { useCookies } from "react-cookie";
-export default function HomePage() {
+export default function AddVillage() {
     let { id } = useParams();
     const [description, setDescription] = useState('')
     const [name, setName] = useState('')
@@ -44,7 +44,6 @@ export default function HomePage() {
     const [cookies, setCookie] = useCookies(['key']);
     const key = ""
     const [spinner, setspinner] = useState(false)
-    const [status, setStatus] = useState(0)
     const getvillage = async () => {
         try {
             setspinner(true)
@@ -57,11 +56,7 @@ export default function HomePage() {
             })
             const json = response.data
             console.log(JSON.stringify(json))
-            if (json.data == null) {
-                return
-            }
             if (json.status == 200) {
-                setStatus(1)
                 setVisi(json.data.vision)
                 setMisi(json.data.mission)
                 setVillageUrl(json.data.url)
@@ -238,7 +233,9 @@ export default function HomePage() {
     let location = useLocation()
 
     useState(() => {
-        getvillage()
+        if (location.pathname.includes("edit")) {
+            getvillage()
+        }
     })
 
     return (
@@ -246,34 +243,50 @@ export default function HomePage() {
             {success ? <Navigate to="/" /> : null}
             <div className="content">
                 <div className="content-main">
-                    <div style={{ display: "flex" }}>
-                        <div className="subtitle" style={{ width: "100%" }}>Desa Tambakrejo</div>
-                        {status == 1
-                            ?
-                            <Link to="/village/edit/1" style={{ textDecoration: "none" }}>
-                                <button className="button add-button" >Update</button>
-                            </Link>
-                            :
-                            <div></div>
-                        }
 
-                    </div>
+                    <div className="subtitle">{location.pathname.includes("edit") ? "Update desa" : "Tambah desa"}</div>
                     <div className="inputtitle" style={{ marginTop: 15 }}>Visi</div>
-                    <textarea className="inputtext" onChange={(e) => { setVisi(e.target.value) }} value={visi} style={{ marginTop: 5, height: 100 }} disabled></textarea>
+                    <textarea className="inputtext" onChange={(e) => { setVisi(e.target.value) }} value={visi} style={{ marginTop: 5, height: 100 }} ></textarea>
                     <div className="inputtitle" style={{ marginTop: 15 }}>Misi</div>
-                    <textarea className="inputtext" onChange={(e) => { setMisi(e.target.value) }} value={misi} style={{ marginTop: 5, height: 100 }} disabled></textarea>
+                    <textarea className="inputtext" onChange={(e) => { setMisi(e.target.value) }} value={misi} style={{ marginTop: 5, height: 100 }} ></textarea>
                     <div className="inputtitle" style={{ marginTop: 15 }}>URL Desa</div>
-                    <input className="inputtext" onChange={(e) => { setVillageUrl(e.target.value) }} value={villageUrl} style={{ marginTop: 5 }} disabled></input>
-                    <div htmlFor="file-upload" style={{ display: "flex", borderRadius: 15, backgroundColor: "white", width: 220, height: 220, marginTop: 30, justifyContent: "center", alignItems: "center" }}>
-                        <img src={imageLink}
-                            style={{ width: "100%", height: "100%", borderRadius: 15, objectFit: "cover" }}
-                        >
-                        </img>
-                    </div>
+                    <input className="inputtext" onChange={(e) => { setVillageUrl(e.target.value) }} value={villageUrl} style={{ marginTop: 5 }} ></input>
+                    <input
+                        id="file-upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={(e) => { handleFileRead(e) }}
+                        size="small"
+                        variant="standard"
+                        style={{ backgroundColor: "white", border: "none", marginTop: 15 }}
+                    />
+                    <label htmlFor="file-upload" style={{ display: "flex", borderRadius: 15, backgroundColor: "white", width: 220, height: 220, marginTop: 30, justifyContent: "center", alignItems: "center" }}>
+                        {imageLink == "" ? (
+                            <div>
+                                <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                                    <img src={require('../../assets/images/empty.png')}
+                                        style={{ width: 100, height: 100 }}
+                                    />
+                                </div>
+                                <div style={{ textAlign: "center", fontSize: 20, color: "#3B97CB", marginTop: 20, textDecorationLine: "underline" }}>Upload Gambar Disini</div>
+                            </div>
+                        ) : (
+                            <img src={imageLink}
+                                style={{ width: "100%", height: "100%", borderRadius: 15, objectFit: "cover" }}
+                            >
+                            </img>
+                        )}
+                    </label>
                     <div style={{ display: "flex", flexDirection: "row", width: "100%", marginTop: 15, marginBottom: 50, alignItems: "end" }}>
                         <div style={{ width: "100%" }}>
                         </div>
                         <div style={{ width: "100%" }}>
+                        </div>
+                        <div style={{ width: "100%" }}>
+                            {location.pathname.includes("edit") ? (
+                                <button className="button publish-button" onClick={updatevillage} style={{ marginTop: 15 }}>Update desa</button>
+                            ) : (
+                                <button className="button publish-button" onClick={addvillage} style={{ marginTop: 15 }}>Tambah desa</button>)}
                         </div>
                     </div>
 

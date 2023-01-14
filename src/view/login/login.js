@@ -1,3 +1,4 @@
+import { add } from "date-fns";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { Link, Navigate } from "react-router-dom";
@@ -29,7 +30,9 @@ export default function Login() {
             const json = response.data
             console.log(JSON.stringify(json))
             if (json.status == 200) {
-                setCookie("key", json.data.token, { path: "/" })
+                const date = add(new Date(), {years: 1})
+                console.log("expire "+date)
+                setCookie("key", json.data.token, { path: "/", expires: date})
                 setIsLoggedIn(true)
             } else {
                 alert("Email atau password salah")
@@ -52,7 +55,7 @@ export default function Login() {
             {isLoggedIn ? <Navigate to="/"></Navigate> : null}
             <form onSubmit={login}>
                 <div style={{ backgroundColor: "white", padding: 22, borderRadius: 15 }}>
-                    <p style={{ color: "black", fontSize: 22, fontFamily: "Roboto-Bold", width: "100%",textAlign:"center" }}>Desa Cerdas</p>
+                    <p style={{ color: "black", fontSize: 22, fontFamily: "Roboto-Bold", width: "100%",textAlign:"center" }}>Desa Cerdas Tambakrejo</p>
                     <div className="inputtitle">Username</div>
                     <input className="inputtext" onChange={(e) => { setEmail(e.target.value) }} value={email} style={{ marginTop: 5, borderColor: "black" }} ></input>
                     <div className="inputtitle" style={{ marginTop: 15 }}>Password</div>

@@ -19,6 +19,12 @@ export default function Home() {
             })
             const json = response.data
             console.log(json)
+            if (json.data.role != 3){
+                alert("Anda bukan admin")
+                setCookie("key", "", { path: "/" })
+                setIsLoggedOut("logout")
+                return
+            }
             if (json.status == 200) {
                 console.log("berhasil")
                 setIsLoggedOut("login")
