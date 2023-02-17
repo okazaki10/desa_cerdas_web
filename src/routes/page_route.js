@@ -1,4 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import Apbdes from "../view/ApbdesView/Apbdes";
+import AddApbdes from "../view/ApbdesView/AddApbdes";
 import AddFasum from "../view/FasumView/AddFasum";
 import Fasum from "../view/FasumView/Fasum";
 import Home from "../view/home";
@@ -7,6 +9,8 @@ import HomePage from "../view/homepage/homepage";
 import Infrastruktur from "../view/infrastruktur/infrastruktur";
 import TambahInfrastruktur from "../view/infrastruktur/tambah_infrastruktur";
 import Login from "../view/login/login";
+import AddOrganisation from "../view/OrganisationView/AddOrganisation";
+import Organisation from "../view/OrganisationView/Organisation";
 import TambahUsers from "../view/users/tambah_users";
 import Users from "../view/users/users";
 import TambahWisata from "../view/wisata/tambah_wisata";
@@ -40,6 +44,16 @@ export default function PageRoute() {
             <Route path="" element={<Fasum />}></Route>
             <Route path="add" element={<AddFasum />}></Route>
             <Route path="edit/:id" element={<AddFasum />}></Route>
+          </Route>
+          <Route path="organisasi/">
+            <Route path="" element={<Organisation />}></Route>
+            <Route path="add/:id" element={<AddOrganisation />}></Route>
+            <Route path="edit/:id" element={<AddOrganisation />}></Route>
+          </Route>
+          <Route path="apbdes/">
+            <Route path="" element={<Apbdes />}></Route>
+            <Route path="add/:id" element={<AddApbdes />}></Route>
+            <Route path="edit/:id" element={<AddApbdes />}></Route>
           </Route>
           <Route path="epasar" element={<HomePage />}></Route>
           <Route path="tpst" element={<HomePage />}></Route>

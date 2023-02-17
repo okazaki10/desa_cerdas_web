@@ -39,6 +39,16 @@ export default function HomeSidebar() {
                     <div style={{ marginLeft: 10 }}>Home</div>
                 </button>
             </Link>
+            <Link to="/organisasi" style={{ textDecoration: "none" }}>
+                <button onClick={displayPressed} className={location.pathname.includes("organisasi") ? "button sidebar-button" : "button sidebar-button-none"} style={{ marginTop: 15 }}>
+                    <div style={{ marginLeft: 10 }}>Organisasi</div>
+                </button>
+            </Link>
+            <Link to="/apbdes" style={{ textDecoration: "none" }}>
+                <button onClick={displayPressed} className={location.pathname.includes("apbdes") ? "button sidebar-button" : "button sidebar-button-none"} style={{ marginTop: 15 }}>
+                    <div style={{ marginLeft: 10 }}>Apbdes</div>
+                </button>
+            </Link>
             <Link to="/users" style={{ textDecoration: "none" }}>
                 <button onClick={displayPressed} className={location.pathname.includes("users") ? "button sidebar-button" : "button sidebar-button-none"} style={{ marginTop: 15 }}>
                     <div style={{ marginLeft: 10 }}>Toko User</div>
